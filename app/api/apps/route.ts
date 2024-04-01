@@ -1,6 +1,9 @@
 import { db } from "@/drizzle";
 import { app as appSchema } from "@/drizzle/schema";
-export async function GET() {
+import { NextRequest } from "next/server";
+export async function GET(req: NextRequest) {
+  const host = req.headers.get("host");
+  if (host) console.log(`Apps requested from ${host}`);
   try {
     const data = await db.select().from(appSchema).orderBy(appSchema.name);
     return Response.json({ status: "success", data });

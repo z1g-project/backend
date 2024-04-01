@@ -4,10 +4,16 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 export async function POST(req: Request) {
   const session = await auth();
+  const data = await req.json();
   if (!session) {
+    console.warn(
+      `${req.headers.get("x-real-ip")} tried to add/update ${data.name} with values ${JSON.stringify(data)}`,
+    );
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const data = await req.json();
+  console.log(
+    `User ${session?.user?.email} is adding/updating ${data.name} with values ${JSON.stringify(data)}`,
+  );
   await db
     .insert(app)
     .values(data)
@@ -27,7 +33,15 @@ export async function POST(req: Request) {
   return Response.json({ success: true });
 }
 export async function DELETE(req: Request) {
+  const session = await auth();
   const { name } = await req.json();
+  if (!session) {
+    console.warn(
+      `${req.headers.get("x-real-ip") ?? req.headers.get("host")} tried to delete ${name}`,
+    );
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  console.warn(`user ${session?.user?.email} is deleting ${name}`);
   await db
     .delete(app)
     .where(eq(app.name, name))

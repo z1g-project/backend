@@ -19,3 +19,4 @@ export default async function AdminLayout({
     </main>
   );
 }
+export const runtime = "edge";
