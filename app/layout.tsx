@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Session } from "./providers";
 import { ThemeProvider } from "next-themes";
@@ -34,7 +33,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
           >
             <Toaster />
             {children}
-            <SpeedInsights />
           </ThemeProvider>
         </Session>
       </body>
