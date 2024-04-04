@@ -9,7 +9,10 @@ export async function POST(req: Request) {
     console.warn(
       `${req.headers.get("x-real-ip")} tried to add/update ${data.name} with values ${JSON.stringify(data)}`,
     );
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json(
+      { error: "Unauthorized haha lmaooo imagine" },
+      { status: 401 },
+    );
   }
   console.log(
     `User ${session?.user?.email} is adding/updating ${data.name} with values ${JSON.stringify(data)}`,
@@ -22,6 +25,7 @@ export async function POST(req: Request) {
       set: {
         description: data.description,
         url: data.url,
+        featured: data.featured,
         image: data.image,
         icon: data.icon,
       },
@@ -39,7 +43,10 @@ export async function DELETE(req: Request) {
     console.warn(
       `${req.headers.get("x-real-ip") ?? req.headers.get("host")} tried to delete ${name}`,
     );
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json(
+      { error: "Unauthorized haha lmaoooooooo imagine" },
+      { status: 401 },
+    );
   }
   console.warn(`user ${session?.user?.email} is deleting ${name}`);
   await db

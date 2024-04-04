@@ -29,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useSWR, { useSWRConfig } from "swr";
@@ -41,6 +42,7 @@ const deleteAppSchema = z.object({
 const insertAppSchema = z.object({
   name: z.string().min(2),
   description: z.string().min(10).max(135),
+  featured: z.boolean(),
   url: z.string().url(),
   image: z.string().url(),
   icon: z.string().url(),
@@ -59,6 +61,7 @@ export default function Page() {
       url: "",
       image: "",
       icon: "",
+      featured: false,
     },
   );
   const [buttonText, setButtonText] = useState("Save");
@@ -73,7 +76,7 @@ export default function Page() {
     createForm.reset(inputValue);
   }, [inputValue]); // eslint-disable-line react-hooks/exhaustive-deps
   const formFields: {
-    name: keyof z.infer<typeof insertAppSchema>;
+    name: string;
     placeholder: string;
   }[] = [
     {
@@ -95,6 +98,10 @@ export default function Page() {
     {
       name: "icon",
       placeholder: "app icon",
+    },
+    {
+      name: "featured",
+      placeholder: "app featured",
     },
   ];
   return (
@@ -119,7 +126,7 @@ export default function Page() {
                       {key === "icon" ? (
                         <Image
                           className="w-12 h-12 aspect-square"
-                          src={app[key as keyof typeof app]}
+                          src={app[key]}
                           alt={app.name}
                           width={32}
                           height={32}
@@ -127,7 +134,7 @@ export default function Page() {
                       ) : key === "image" ? (
                         <Image
                           className="aspect-auto"
-                          src={app[key as keyof typeof app]}
+                          src={app[key]}
                           alt={app.name}
                           width={150}
                           height={75}
@@ -184,9 +191,11 @@ export default function Page() {
                 }
                 return response.json();
               });
+              setDisabledInput(false);
               createForm.reset({
                 name: "",
                 description: "",
+                featured: false,
                 url: "",
                 image: "",
                 icon: "",
@@ -199,24 +208,38 @@ export default function Page() {
             },
           )}
         >
-          <section className="flex flex-row flex-wrap">
+          <section className="flex flex-row flex-wrap gap-2 items-center">
             {formFields.map((formField, key) => (
               <FormField
                 key={key}
                 control={createForm.control}
                 name={formField.name as keyof z.infer<typeof insertAppSchema>}
                 render={({ field }) => (
-                  <FormItem className="ml-2 mt-2">
+                  <FormItem
+                    className={
+                      formField.name === "featured"
+                        ? "flex-col flex items-center -mb-2"
+                        : ""
+                    }
+                  >
                     <FormLabel>{formField.name}</FormLabel>
                     <FormMessage />
                     <FormControl>
-                      <Input
-                        className="w-56"
-                        {...field}
-                        {...(formField.name === "name" && {
-                          disabled: disabledInput,
-                        })}
-                      />
+                      {formField.name !== "featured" ? (
+                        <Input
+                          className="w-48"
+                          {...field}
+                          value={field.value.toString()}
+                          {...(formField.name === "name" && {
+                            disabled: disabledInput,
+                          })}
+                        />
+                      ) : (
+                        <Switch
+                          checked={field.value as boolean}
+                          onCheckedChange={field.onChange}
+                        />
+                      )}
                     </FormControl>
                   </FormItem>
                 )}
@@ -229,6 +252,7 @@ export default function Page() {
               className="mx-2 self-end mt-2"
               variant="destructive"
               onClick={() => {
+                setDisabledInput(false);
                 createForm.reset(
                   {
                     name: "",
@@ -242,13 +266,13 @@ export default function Page() {
                     keepErrors: false,
                   },
                 );
-                setDisabledInput(false);
                 setInputValue({
                   name: "",
                   description: "",
                   url: "",
                   image: "",
                   icon: "",
+                  featured: false,
                 });
                 setButtonText("Save");
               }}
