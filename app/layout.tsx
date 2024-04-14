@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   metadataBase:
     process.env.NODE_ENV === "development"
       ? new URL(process.env.LOCAL_URL ?? "http://localhost:3000")
-      : new URL(`https://z1g-project.vercel.app`),
+      : new URL(`https://z1g.top`),
 };
 
 export default async function Layout({ children }: { children: ReactNode }) {
