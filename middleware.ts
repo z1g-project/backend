@@ -17,6 +17,6 @@ export const middleware = auth(async (req) => {
 });
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|icon.svg|api/auth|manifest.webmanifest).*)",
+    "/((?!_next/static|_next/image|icon.svg|api|manifest.webmanifest).*)",
   ],
 };
