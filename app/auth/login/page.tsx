@@ -1,19 +1,19 @@
-"use client";
-import { useState } from "react";
-import { redirect, useSearchParams } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Loader2, LogIn, AlertCircle } from "lucide-react";
-export default function Login() {
-  const { data: session } = useSession();
+import { LogIn, AlertCircle } from "lucide-react";
+import { StyledSubmit } from "@/components/submit-button";
+import { auth, signIn } from "@/auth";
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const session = await auth();
   if (session) {
     redirect("/");
   }
-  const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(false);
-  const error = searchParams.get("error");
+  const { error } = searchParams;
   return (
     <>
       <CardTitle className="text-center">Welcome</CardTitle>
@@ -22,30 +22,25 @@ export default function Login() {
         able to log in.
       </CardHeader>
       <CardContent className="m-2 w-full flex-col">
-        {error && (
+        {error ? (
           <Alert variant="destructive" className="w-full text-destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error logging in:</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
-        )}
-        <div className="mx-auto mt-4 flex w-full flex-col items-center justify-center gap-2">
-          <Button
-            disabled={loading}
-            className="my-1 w-full"
-            onClick={() => {
-              setLoading(true);
-              signIn("github");
-            }}
-          >
-            {loading ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            ) : (
-              <LogIn className="mr-2 size-5" />
-            )}
+        ) : null}
+        <form
+          action={async () => {
+            "use server";
+            await signIn("github");
+          }}
+          className="mx-auto mt-4 flex w-full flex-col items-center justify-center gap-2"
+        >
+          <StyledSubmit className="my-1 w-full">
+            <LogIn className="mr-2 size-5" />
             Log in with GitHub
-          </Button>
-        </div>
+          </StyledSubmit>
+        </form>
       </CardContent>
     </>
   );

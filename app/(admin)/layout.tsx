@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import Navigation from "@/components/navbar";
 
 export default async function AdminLayout({
@@ -8,10 +6,6 @@ export default async function AdminLayout({
 }: {
   children: ReactNode;
 }) {
-  const session = await auth();
-  if (!session) {
-    return redirect("/auth/login");
-  }
   return (
     <main>
       <Navigation />

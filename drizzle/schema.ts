@@ -1,5 +1,6 @@
 import { createInsertSchema } from "drizzle-zod";
 import { pgTable, unique, text, boolean } from "drizzle-orm/pg-core";
+import App from "next/app";
 
 export const app = pgTable(
   "app",
@@ -17,5 +18,6 @@ export const app = pgTable(
     };
   },
 );
+export type SelectApp = typeof app.$inferSelect;
 
 export const insertAppSchema = createInsertSchema(app);

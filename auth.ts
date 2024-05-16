@@ -1,9 +1,6 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth({
+export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/auth/login",
     signOut: "/auth/logout",
@@ -31,15 +28,14 @@ export const {
       );
       if (orgCheck.status === 204) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
   ],
 });
