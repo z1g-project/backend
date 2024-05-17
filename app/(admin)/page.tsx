@@ -1,9 +1,6 @@
-import { z } from "zod";
+import { createApp } from "@/actions/app";
 import { DataTable } from "@/components/data-table";
-import { db } from "@/drizzle";
-import { app, insertAppSchema } from "@/drizzle/schema";
-import { columns } from "./columns";
-import { Input } from "@/components/ui/input";
+import { StyledSubmit } from "@/components/submit-button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,9 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { StyledSubmit } from "@/components/submit-button";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { db } from "@/drizzle";
+import { app } from "@/drizzle/schema";
+import { columns } from "./columns";
 
 export default async function Page() {
   const apps = await db.select().from(app).orderBy(app.name);
@@ -30,51 +31,22 @@ export default async function Page() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add App</DialogTitle>
-              <DialogDescription>Add a new app</DialogDescription>
+              <DialogDescription>The app will automatically save after you click the button.</DialogDescription>
             </DialogHeader>
             <form
-              action={async (data: FormData) => {
-                "use server";
-                const validatedFields = insertAppSchema.safeParse({
-                  name: data.get("name"),
-                  description: data.get("description"),
-                  url: data.get("url"),
-                  image: data.get("image"),
-                  icon: data.get("icon"),
-                  featured: data.get("featured"),
-                });
-                if (!validatedFields.success) {
-                  return {
-                    errors: validatedFields.error.flatten().fieldErrors,
-                  };
-                }
-                await db
-                  .insert(app)
-                  .values(validatedFields.data)
-                  .onConflictDoUpdate({
-                    target: app.name,
-                    set: {
-                      description: validatedFields.data.description,
-                      url: validatedFields.data.url,
-                      featured: validatedFields.data.featured,
-                      image: validatedFields.data.image,
-                      icon: validatedFields.data.icon,
-                    },
-                  });
-				return { success: true };
-              }}
-			  className="flex flex-col gap-2 w-full"
+              action={createApp}
+              className="flex flex-col gap-2 w-full"
             >
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name" name="name" />
+              <Input id="name" placeholder="Name" name="name" minLength={2} required />
               <Label htmlFor="desc">Description</Label>
-              <Input id="desc" placeholder="Description" name="description" />
+              <Textarea id="desc" placeholder="Description" name="description" minLength={10} maxLength={135} required />
               <Label htmlFor="url">URL</Label>
-              <Input id="url" placeholder="URL" name="url" />
+              <Input id="url" placeholder="URL" name="url" type="url" required />
               <Label htmlFor="img">Image</Label>
-              <Input id="img" placeholder="Image" name="image" />
+              <Input id="img" placeholder="Image" name="image" type="url" required />
               <Label htmlFor="icon">Icon</Label>
-              <Input id="icon" placeholder="Icon" name="icon" />
+              <Input id="icon" placeholder="Icon" name="icon" type="url" required />
               <Label htmlFor="featured">Featured</Label>
               <Switch id="featured" name="featured" />
               <StyledSubmit>Add App</StyledSubmit>

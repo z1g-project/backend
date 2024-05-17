@@ -1,13 +1,6 @@
 "use client";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuLink,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+import icon from "@/app/icon.png"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +9,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ModeToggle from "./mode-toggle";
-import Link from "next/link";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { LayoutDashboardIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import ModeToggle from "./mode-toggle";
 export default function Navigation() {
   const { data: session } = useSession();
   const { name, email, image } = session?.user || {};
@@ -28,21 +29,21 @@ export default function Navigation() {
     label: string;
     href: string;
   }[] = [
-    {
-      icon: <LayoutDashboardIcon />,
-      label: "Dashboard",
-      href: "/",
-    },
-  ];
+      {
+        icon: <LayoutDashboardIcon />,
+        label: "Dashboard",
+        href: "/",
+      },
+    ];
   return (
     <div className="flex h-16 min-w-full items-center justify-between bg-background/70 backdrop-blur-md px-6 z-50 fixed -mt-16">
       <div className="flex items-center justify-start">
-        <Image src="/icon.png" alt="z1g Project" width={24} height={24} />
+        <Image src={icon} alt="z1g Project" className="size-8" />
         <span className="ml-2 mr-4 text-xl font-bold">z1g Project</span>
         <NavigationMenu className="flex items-center justify-start">
           <NavigationMenuList>
-            {navigationItems.map((item, index) => (
-              <NavigationMenuItem key={index}>
+            {navigationItems.map((item) => (
+              <NavigationMenuItem key={item.href}>
                 <Link href={item.href} legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <span className="mr-2 flex size-4 items-center justify-center">
