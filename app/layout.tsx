@@ -1,11 +1,11 @@
 import "./globals.css";
-import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "next-themes";
 import { auth } from "@/auth";
+import { Toaster } from "@/components/ui/sonner";
 import { GeistSans } from "geist/font/sans";
-import type { ReactNode } from "react";
+import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: {
@@ -35,3 +35,4 @@ export default async function Layout({ children }: { children: ReactNode }) {
     </html>
   );
 }
+export const runtime = "edge"
