@@ -17,12 +17,11 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { LayoutDashboardIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
+import type { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import ModeToggle from "./mode-toggle";
-export default function Navigation() {
-  const { data: session } = useSession();
+export default function Navigation({ session }: { session: Session | null }) {
   const { name, email, image } = session?.user || {};
   const navigationItems: {
     icon: React.ReactNode;
