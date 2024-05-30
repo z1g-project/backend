@@ -1,6 +1,8 @@
 import { db } from "@/drizzle";
 import { app as appSchema } from "@/drizzle/schema";
 import type { NextRequest } from "next/server";
+// edging
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const host = req.headers.get("host");
   if (host) console.log(`Apps requested from ${host}`);
@@ -21,6 +23,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-// edging
-export const runtime = "edge";
-export const dynamic = "force-dynamic";
